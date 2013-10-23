@@ -18,15 +18,18 @@ class RedisImplementation implements CacheImplementationInterface
      */
     public function init(array $connections)
     {
-        if(!class_exists("Predis")) throw new \Exception("'Predis' class does not exist. Please install it to be able to use the Memcache connections");
+        if(!class_exists("\\Predis\\Client")) throw new \Exception("'Predis' class does not exist. Please install it to be able to use the Memcache connections");
 
         $preparedConnections = array();
-        foreach ($connections as $connection) {
-            $explodedConnection = explode(":", $connection);
-            $preparedConnections[] = array("host" => $connection[0], "port" => (int) $connection[1]);
-        }
-        //Connect to multiple instances
-        $this->client = new Predis\Client($preparedConnections);
+        //TODO : Support multiple connections , connect to first server
+        $firstConnection = $connections[0];
+        $explodedConnection = explode(":", $firstConnection);
+
+        $this->client = new Predis\Client(array(
+            'scheme' => 'tcp',
+            'host'   => $explodedConnection[0],
+            'port'   => (int) $explodedConnection[1],
+        ));
     }
 
     /**
