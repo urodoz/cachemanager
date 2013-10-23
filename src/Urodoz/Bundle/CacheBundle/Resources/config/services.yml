@@ -1,0 +1,9 @@
+parameters:
+    urodoz_cache.manager.class: Urodoz\Bundle\CacheBundle\Service\CacheManager
+
+services:
+    urodoz_cachemanager:
+        class: %urodoz_cache.manager.class%
+        calls:
+            - ["setGenericConnections", ["memcache", %urodoz_cachemanager.memcacheimplementations%]]
+            - ["setGenericConnections", ["redis", %urodoz_cachemanager.redisimplementations%]]
