@@ -65,12 +65,12 @@ class CacheManagerTest extends UrodozBaseTest
         $this->assertTrue($cacheManager instanceof CacheManager);
 
         $randomKey = uniqid();
-        $cacheManager->implementation("memcache")->set($randomKey, "foo:bar", 10);
+        $cacheManager->implementation("redis")->set($randomKey, "foo:bar", 10);
 
-        $this->assertEquals("foo:bar", $cacheManager->implementation("memcache")->get($randomKey));
+        $this->assertEquals("foo:bar", $cacheManager->implementation("redis")->get($randomKey));
 
         return array(
-            "memcache" => $cacheManager->implementation("memcache"),
+            "redis" => $cacheManager->implementation("redis"),
             "randomKey" => $randomKey,
         );
     }
