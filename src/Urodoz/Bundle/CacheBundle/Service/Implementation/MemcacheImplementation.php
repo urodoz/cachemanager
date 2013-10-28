@@ -3,8 +3,9 @@
 namespace Urodoz\Bundle\CacheBundle\Service\Implementation;
 
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
+use Urodoz\Bundle\CacheBundle\Service\AbstractCacheImplementation;
 
-class MemcacheImplementation implements CacheImplementationInterface
+class MemcacheImplementation extends AbstractCacheImplementation implements CacheImplementationInterface
 {
 
     const DEFAULT_TIMEOUT = 36000; //10 Hours by default
@@ -33,6 +34,7 @@ class MemcacheImplementation implements CacheImplementationInterface
      */
     public function set($key, $value, $timeout=null)
     {
+        $key = $this->updateCacheKey($key);
         if(is_null($timeout)) $timeout = static::DEFAULT_TIMEOUT;
 
         return $this->memcache->set($key, $value, MEMCACHE_COMPRESSED, $timeout);
@@ -43,6 +45,8 @@ class MemcacheImplementation implements CacheImplementationInterface
      */
     public function get($key)
     {
+        $key = $this->updateCacheKey($key);
+
         return $this->memcache->get($key, MEMCACHE_COMPRESSED);
     }
 
@@ -51,7 +55,8 @@ class MemcacheImplementation implements CacheImplementationInterface
      */
     public function setIndexed($key, $value, $timeout=null)
     {
-
+        $key = $this->updateCacheKey($key);
+        //TODO : complete
     }
 
     /**
@@ -67,6 +72,8 @@ class MemcacheImplementation implements CacheImplementationInterface
      */
     public function has($key)
     {
+        $key = $this->updateCacheKey($key);
+
         return  ($this->get($key));
     }
 
@@ -75,7 +82,7 @@ class MemcacheImplementation implements CacheImplementationInterface
      */
     public function hasIndexed($key)
     {
-
+        $key = $this->updateCacheKey($key);
     }
 
     /**
@@ -83,6 +90,7 @@ class MemcacheImplementation implements CacheImplementationInterface
      */
     public function remove($key)
     {
+        $key = $this->updateCacheKey($key);
         $this->memcache->delete($key);
     }
 

@@ -5,6 +5,9 @@ namespace Urodoz\Bundle\CacheBundle\Service;
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
 use Urodoz\Bundle\CacheBundle\Service\Implementation\MemcacheImplementation;
 use Urodoz\Bundle\CacheBundle\Service\Implementation\RedisImplementation;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
+use Urodoz\Bundle\CacheBundle\Exception\CacheException;
 
 class CacheManager
 {
@@ -23,11 +26,42 @@ class CacheManager
      */
     private $implementations=array();
 
+    /**
+     * Prefix generator service
+     *
+     * @var PrefixGeneratorInterface
+     */
+    private $prefixGenerator;
+
     public function setGenericConnections($key, array $connections)
     {
         if(!isset($this->connections[$key])) $this->connections[$key] = array();
         foreach ($connections as $configConnection) {
             $this->connections[$key][] = $configConnection;
+        }
+    }
+
+    /**
+     * Sets the prefix generator service if this service is defined
+     * and exists on the container
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $service
+     * @throws CacheException
+     */
+    public function setPrefixGenerator(ContainerInterface $container, $service = null)
+    {
+        if (!is_null($service) && $container->has($service)) {
+            $serviceFromContainer = $container->get($service);
+            if (!$serviceFromContainer instanceof PrefixGeneratorInterface) {
+                throw new CacheException(
+                        "A PrefixGenerator service (id:".$service.")"
+                        ." has been registered on CacheManager, but does not"
+                        ." implement the PrefixGeneratorInterface as expected"
+                        );
+            }
+            //Adding service to instance
+            $this->prefixGenerator = $serviceFromContainer;
         }
     }
 
@@ -59,10 +93,10 @@ class CacheManager
     {
         switch ($key) {
             case "redis":
-                return new RedisImplementation();
+                return new RedisImplementation($this->prefixGenerator);
                 break;
             case "memcache":
-                return new MemcacheImplementation();
+                return new MemcacheImplementation($this->prefixGenerator);
                 break;
             default:
                 throw new \Exception("Implementation for {".$key."} not found");

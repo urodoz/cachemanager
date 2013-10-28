@@ -65,6 +65,43 @@ $cacheManager->implementation("redis")->set($key, $value, 3600);
 $cacheManager->implementation("redis")->get($key);
 ```
 
+Prefix generation
+-----------------
+
+You can attach a service from Symfony2 container to generate a prefix for all the cache keys. The next configuration is a sample :
+
+```yml
+urodoz_cache:
+    memcache:
+        servers: ["127.0.0.1:11211"]
+    redis:
+        servers: ["192.168.1.120:6379"]
+    key_generation:
+        prefix: someServiceIdFromContainer
+```
+
+The service should implement the PrefixGeneratorInterface. The next class is a sample of cache prefix key generator :
+
+```php
+<?php
+
+namespace Urodoz\Bundle\CacheBundle\Tests\Service\Mocks;
+
+use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
+class PrefixGenerator implements PrefixGeneratorInterface, ContainerAwareInterface
+{
+
+    //....
+
+    public function getPrefix($nonPrefixedKey)
+    {
+        return $this->container->getParameter("application_version"); 
+    }
+
+}
+```
 
 Indexes Keys
 ------------

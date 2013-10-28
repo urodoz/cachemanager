@@ -23,6 +23,23 @@ class UrodozCacheExtension extends Extension
     const PARAM_KEY_REDIS_IMPLEMENTATIONS = "urodoz_cachemanager.redisimplementations";
 
     /**
+     * Boolean flag parameter key to indicate if the cache
+     * keys should be prefixed using a service
+     *
+     * @var string
+     */
+    const PARAM_KEY_HAS_PREFIX_GENERATOR = "urodoz_cachemanager.haskeyprefixgenerator";
+
+    /**
+     * Parameter key on container to identify the
+     * service id of the prefix generator service from
+     * container
+     *
+     * @var string
+     */
+    const PARAM_KEY_PREFIX_GENERATOR_SERVICE_ID = "urodoz_cachemanager.prefixgenerator";
+
+    /**
      * @var Validator
      */
     private $validator;
@@ -35,7 +52,9 @@ class UrodozCacheExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        //Load cache implementations
+        /*
+         * Load Memcache implementation
+         */
         if (isset($config["memcache"]["servers"])) {
             $this->loadMemcacheServers($config["memcache"]["servers"],$container);
         } else {
@@ -43,11 +62,24 @@ class UrodozCacheExtension extends Extension
             $container->setParameter(static::PARAM_KEY_MEMCACHE_IMPLEMENTATIONS, array());
         }
 
+        /*
+         * Load Redis implementation
+         */
         if (isset($config["redis"]["servers"])) {
             $this->loadRedisServers($config["redis"]["servers"],$container);
         } else {
             //Default array of servers : Empty
             $container->setParameter(static::PARAM_KEY_REDIS_IMPLEMENTATIONS, array());
+        }
+
+        /*
+         * Load prefix generator implementation
+         */
+        $container->setParameter(static::PARAM_KEY_HAS_PREFIX_GENERATOR, false); //Default value
+        $container->setParameter(static::PARAM_KEY_PREFIX_GENERATOR_SERVICE_ID, null); //Default value
+        if (isset($config["key_generation"]) && isset($config["key_generation"]["prefix"])) {
+            $container->setParameter(static::PARAM_KEY_HAS_PREFIX_GENERATOR, true);
+            $container->setParameter(static::PARAM_KEY_PREFIX_GENERATOR_SERVICE_ID, $config["key_generation"]["prefix"]);
         }
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

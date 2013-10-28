@@ -39,6 +39,14 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
+
+                    ->arrayNode("key_generation")
+                        ->children()
+                            ->scalarNode("prefix")
+                            ->end()
+                        ->end()
+                    ->end()
+
                 ->end();
 
         return $treeBuilder;

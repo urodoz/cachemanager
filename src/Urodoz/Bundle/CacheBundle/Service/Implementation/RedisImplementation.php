@@ -4,8 +4,9 @@ namespace Urodoz\Bundle\CacheBundle\Service\Implementation;
 
 use Predis;
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
+use Urodoz\Bundle\CacheBundle\Service\AbstractCacheImplementation;
 
-class RedisImplementation implements CacheImplementationInterface
+class RedisImplementation extends AbstractCacheImplementation implements CacheImplementationInterface
 {
 
     /**
@@ -37,6 +38,8 @@ class RedisImplementation implements CacheImplementationInterface
      */
     public function set($key, $value, $timeout=null)
     {
+        $key = $this->updateCacheKey($key);
+
         return $this->client->set($key, $value);
     }
 
@@ -45,6 +48,8 @@ class RedisImplementation implements CacheImplementationInterface
      */
     public function get($key)
     {
+        $key = $this->updateCacheKey($key);
+
         return $this->client->get($key);
     }
 
@@ -61,7 +66,7 @@ class RedisImplementation implements CacheImplementationInterface
      */
     public function getIndexed($key)
     {
-
+        $key = $this->updateCacheKey($key);
     }
 
     /**
@@ -69,6 +74,8 @@ class RedisImplementation implements CacheImplementationInterface
      */
     public function has($key)
     {
+        $key = $this->updateCacheKey($key);
+
         return  ($this->get($key));
     }
 
@@ -85,7 +92,7 @@ class RedisImplementation implements CacheImplementationInterface
      */
     public function remove($key)
     {
-
+        $key = $this->updateCacheKey($key);
     }
 
     /**

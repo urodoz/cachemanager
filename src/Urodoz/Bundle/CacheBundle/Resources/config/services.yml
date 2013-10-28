@@ -7,3 +7,4 @@ services:
         calls:
             - ["setGenericConnections", ["memcache", %urodoz_cachemanager.memcacheimplementations%]]
             - ["setGenericConnections", ["redis", %urodoz_cachemanager.redisimplementations%]]
+            - ["setPrefixGenerator", [@service_container, %urodoz_cachemanager.prefixgenerator%]]
