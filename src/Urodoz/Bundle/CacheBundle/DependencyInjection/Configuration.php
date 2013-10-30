@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the UrodozCacheManager bundle.
+ *
+ * (c) Albert Lacarta <urodoz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Urodoz\Bundle\CacheBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -43,6 +52,22 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode("key_generation")
                         ->children()
                             ->scalarNode("prefix")
+                            ->end()
+                        ->end()
+                    ->end()
+
+                    /*
+                     * Behaviours
+                     */
+                    ->arrayNode("behaviours")
+                        ->children()
+                            ->arrayNode("chunked_items")
+                                ->children()
+                                    ->scalarNode("chunk_size")
+                                    ->end()
+                                    ->booleanNode("enabled")
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

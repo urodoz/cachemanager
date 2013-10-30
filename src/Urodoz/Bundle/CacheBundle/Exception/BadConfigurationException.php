@@ -11,15 +11,13 @@
 
 namespace Urodoz\Bundle\CacheBundle\Exception;
 
-class CacheException extends \Exception
+/**
+ * Exception to be throwed on any exception during the
+ * building of the container process by the UrodozCacheExtension
+ *
+ * @author Albert Lacarta <urodoz@gmail.com>
+ */
+class BadConfigurationException extends CacheException
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct($message, $code=null, $previous=null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
 
 }

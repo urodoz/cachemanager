@@ -1,12 +1,20 @@
 <?php
 
+/*
+ * This file is part of the UrodozCacheManager bundle.
+ *
+ * (c) Albert Lacarta <urodoz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Urodoz\Bundle\CacheBundle\Service\Implementation;
 
 use Predis;
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
-use Urodoz\Bundle\CacheBundle\Service\AbstractCacheImplementation;
 
-class RedisImplementation extends AbstractCacheImplementation implements CacheImplementationInterface
+class RedisImplementation implements CacheImplementationInterface
 {
 
     /**
@@ -24,12 +32,11 @@ class RedisImplementation extends AbstractCacheImplementation implements CacheIm
         $preparedConnections = array();
         //TODO : Support multiple connections , connect to first server
         $firstConnection = $connections[0];
-        $explodedConnection = explode(":", $firstConnection);
 
         $this->client = new Predis\Client(array(
             'scheme' => 'tcp',
-            'host'   => $explodedConnection[0],
-            'port'   => (int) $explodedConnection[1],
+            'host'   => $firstConnection["host"],
+            'port'   => (int) $firstConnection["port"],
         ));
     }
 
@@ -38,8 +45,6 @@ class RedisImplementation extends AbstractCacheImplementation implements CacheIm
      */
     public function set($key, $value, $timeout=null)
     {
-        $key = $this->updateCacheKey($key);
-
         return $this->client->set($key, $value);
     }
 
@@ -48,8 +53,6 @@ class RedisImplementation extends AbstractCacheImplementation implements CacheIm
      */
     public function get($key)
     {
-        $key = $this->updateCacheKey($key);
-
         return $this->client->get($key);
     }
 
@@ -66,7 +69,7 @@ class RedisImplementation extends AbstractCacheImplementation implements CacheIm
      */
     public function getIndexed($key)
     {
-        $key = $this->updateCacheKey($key);
+
     }
 
     /**
@@ -74,8 +77,6 @@ class RedisImplementation extends AbstractCacheImplementation implements CacheIm
      */
     public function has($key)
     {
-        $key = $this->updateCacheKey($key);
-
         return  ($this->get($key));
     }
 
@@ -92,7 +93,7 @@ class RedisImplementation extends AbstractCacheImplementation implements CacheIm
      */
     public function remove($key)
     {
-        $key = $this->updateCacheKey($key);
+
     }
 
     /**

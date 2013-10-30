@@ -1,10 +1,15 @@
 parameters:
     urodoz_cache.manager.class: Urodoz\Bundle\CacheBundle\Service\CacheManager
+    urodoz_configuration.factory.class: Urodoz\Bundle\CacheBundle\Service\ConfigurationFactory
 
 services:
+
+    urodoz_configurationFactory:
+        class: %urodoz_configuration.factory.class%
+
     urodoz_cachemanager:
         class: %urodoz_cache.manager.class%
         calls:
-            - ["setGenericConnections", ["memcache", %urodoz_cachemanager.memcacheimplementations%]]
-            - ["setGenericConnections", ["redis", %urodoz_cachemanager.redisimplementations%]]
+            - ["setGenericConnections", ["memcache", %urodoz_cachemanager.memcacheconnections%]]
+            - ["setGenericConnections", ["redis", %urodoz_cachemanager.redisconnections%]]
             - ["setPrefixGenerator", [@service_container, %urodoz_cachemanager.prefixgenerator%]]

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the UrodozCacheManager bundle.
+ *
+ * (c) Albert Lacarta <urodoz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Urodoz\Bundle\CacheBundle\Tests\Service;
 
 use Urodoz\Bundle\CacheBundle\Lib\UrodozBaseTest;
@@ -24,7 +33,7 @@ class CacheManagerTest extends UrodozBaseTest
      */
     public function testBasicSetAndRetrieveForMemcache()
     {
-        $container = $this->buildAndMarkSkippedCacheServersUndefined();
+        $container = $this->buildAndMarkSkippedCacheServersUndefined(true);
         $cacheManager = $container->get("urodoz_cachemanager");
         $this->assertTrue($cacheManager instanceof CacheManager);
 
@@ -58,12 +67,12 @@ class CacheManagerTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testBasicSetAndRetrieveForRedis -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
+     * R
      * @endcode
      */
     public function testBasicSetAndRetrieveForRedis()
     {
-        $container = $this->buildAndMarkSkippedCacheServersUndefined();
+        $container = $this->buildAndMarkSkippedCacheServersUndefined(false, true);
         $cacheManager = $container->get("urodoz_cachemanager");
         $this->assertTrue($cacheManager instanceof CacheManager);
 
@@ -115,7 +124,7 @@ class CacheManagerTest extends UrodozBaseTest
      */
     public function testPrefixGeneratorCustom($implementationName)
     {
-        $container = $this->buildAndMarkSkippedCacheServersUndefined();
+        $container = $this->buildAndMarkSkippedCacheServersUndefined(true, true);
         $cacheManager = $container->get("urodoz_cachemanager");
         $this->assertTrue($cacheManager instanceof CacheManager);
 

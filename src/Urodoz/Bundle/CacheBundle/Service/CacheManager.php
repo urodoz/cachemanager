@@ -1,15 +1,23 @@
 <?php
 
+/*
+ * This file is part of the UrodozCacheManager bundle.
+ *
+ * (c) Albert Lacarta <urodoz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Urodoz\Bundle\CacheBundle\Service;
 
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
-use Urodoz\Bundle\CacheBundle\Service\Implementation\MemcacheImplementation;
-use Urodoz\Bundle\CacheBundle\Service\Implementation\RedisImplementation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
 use Urodoz\Bundle\CacheBundle\Exception\CacheException;
+use Urodoz\Bundle\CacheBundle\Service\ConfigurationFactory;
 
-class CacheManager
+class CacheManager implements CacheImplementationInterface
 {
 
     /**
@@ -27,6 +35,14 @@ class CacheManager
     private $implementations=array();
 
     /**
+     * Determines the active implementation
+     * on the cacheManager
+     *
+     * @var string
+     */
+    private $activeImplementation=null;
+
+    /**
      * Prefix generator service
      *
      * @var PrefixGeneratorInterface
@@ -38,6 +54,17 @@ class CacheManager
         if(!isset($this->connections[$key])) $this->connections[$key] = array();
         foreach ($connections as $configConnection) {
             $this->connections[$key][] = $configConnection;
+        }
+    }
+
+    private function raiseExceptionIfNoImplementationSetted()
+    {
+        if (is_null($this->activeImplementation)) {
+            throw new CacheException(
+                    "No implementation has been loaded to manage cache. "
+                    . "Maybe you forgot to call the implementation method "
+                    . "first : \$cacheManager->implementation()->set(..."
+                    );
         }
     }
 
@@ -66,7 +93,7 @@ class CacheManager
     }
 
     /**
-     * @return CacheImplementationInterface
+     * @return CacheManager
      */
     public function implementation($key)
     {
@@ -76,14 +103,14 @@ class CacheManager
         }
         //Create implementation with connections
         if (!isset($this->implementations[$key])) {
-
             $implementation = $this->factoryImplementation($key);
             $implementation->init($this->connections[$key]);
             $this->implementations[$key] = $implementation;
         }
 
-        //Return implementation
-        return $this->implementations[$key];
+        $this->activeImplementation = $key;
+
+        return $this;
     }
 
     /**
@@ -91,17 +118,143 @@ class CacheManager
      */
     private function factoryImplementation($key)
     {
-        switch ($key) {
-            case "redis":
-                return new RedisImplementation($this->prefixGenerator);
-                break;
-            case "memcache":
-                return new MemcacheImplementation($this->prefixGenerator);
-                break;
-            default:
-                throw new \Exception("Implementation for {".$key."} not found");
-                break;
+        $configuration = ConfigurationFactory::$implementationsConfigs[$key];
+        $implementationClass = $configuration["implementationClass"];
+        if (!class_exists($implementationClass)) {
+            throw new \Exception("Class not found {".$implementationClass."}");
         }
+        $implementationInstance = new $implementationClass();
+
+        return $implementationInstance;
+    }
+
+    /**
+     * Apply all modifications to cacheKey before being
+     * used on the implementation
+     *
+     * @param  string $cacheKey
+     * @return string
+     */
+    protected function updateCacheKey($cacheKey)
+    {
+        if($this->hasPrefixGenerator()) $cacheKey = $this->prefixGenerator->getPrefix ($cacheKey) . $cacheKey;
+
+        return $cacheKey;
+    }
+
+    /**
+     * Boolean flag indicator for a Cache implementation
+     * containing a service for prefix generator
+     *
+     * @return boolean
+     */
+    protected function hasPrefixGenerator()
+    {
+        return ($this->prefixGenerator instanceof PrefixGeneratorInterface);
+    }
+
+    /**
+     * Returns the active implementation of CacheManager
+     *
+     * @return CacheImplementationInterface
+     */
+    public function getActiveImplementation()
+    {
+        $this->raiseExceptionIfNoImplementationSetted();
+
+        return $this->implementations[$this->activeImplementation];
+    }
+
+    /*
+     * Interface implementation as Driver to final implementation
+     */
+
+    /**
+     * {@inheritDoc}
+     */
+    public function init(array $connections)
+    {
+        $this->raiseExceptionIfNoImplementationSetted();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function set($key, $value, $timeout=null)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->set($key, $value, $timeout);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function get($key)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->get($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIndexed($key, $value, $timeout=null)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->setIndexed($key, $value, $timeout);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIndexed($key)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->getIndexed($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function has($key)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->has($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasIndexed($key)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->hasIndexed($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function remove($key)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->remove($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeIndexed($pattern)
+    {
+        $key = $this->updateCacheKey($key);
+
+        return $this->getActiveImplementation()->removeIndexed($pattern);
     }
 
 }

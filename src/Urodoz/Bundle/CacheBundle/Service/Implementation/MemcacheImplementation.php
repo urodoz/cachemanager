@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * This file is part of the UrodozCacheManager bundle.
+ *
+ * (c) Albert Lacarta <urodoz@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Urodoz\Bundle\CacheBundle\Service\Implementation;
 
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
-use Urodoz\Bundle\CacheBundle\Service\AbstractCacheImplementation;
 
-class MemcacheImplementation extends AbstractCacheImplementation implements CacheImplementationInterface
+class MemcacheImplementation implements CacheImplementationInterface
 {
 
     const DEFAULT_TIMEOUT = 36000; //10 Hours by default
@@ -24,8 +32,7 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
 
         $this->memcache = new \Memcache();
         foreach ($connections as $connection) {
-            $explodedConnection = explode(":", $connection);
-            $this->memcache->addserver($explodedConnection[0], $explodedConnection[1]);
+            $this->memcache->addserver($connection["host"], $connection["port"]);
         }
     }
 
@@ -34,7 +41,6 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
      */
     public function set($key, $value, $timeout=null)
     {
-        $key = $this->updateCacheKey($key);
         if(is_null($timeout)) $timeout = static::DEFAULT_TIMEOUT;
 
         return $this->memcache->set($key, $value, MEMCACHE_COMPRESSED, $timeout);
@@ -45,8 +51,6 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
      */
     public function get($key)
     {
-        $key = $this->updateCacheKey($key);
-
         return $this->memcache->get($key, MEMCACHE_COMPRESSED);
     }
 
@@ -55,7 +59,6 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
      */
     public function setIndexed($key, $value, $timeout=null)
     {
-        $key = $this->updateCacheKey($key);
         //TODO : complete
     }
 
@@ -72,8 +75,6 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
      */
     public function has($key)
     {
-        $key = $this->updateCacheKey($key);
-
         return  ($this->get($key));
     }
 
@@ -82,7 +83,7 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
      */
     public function hasIndexed($key)
     {
-        $key = $this->updateCacheKey($key);
+
     }
 
     /**
@@ -90,7 +91,6 @@ class MemcacheImplementation extends AbstractCacheImplementation implements Cach
      */
     public function remove($key)
     {
-        $key = $this->updateCacheKey($key);
         $this->memcache->delete($key);
     }
 
