@@ -54,6 +54,21 @@ $cacheManager->implementation("memcache")->set($key, $value, 3600);
 $cacheManager->implementation("memcache")->get($key);
 ```
 
+When calling to method implementation, it sets the active implementation on the CacheManager service. You can avoid to set again the implementation on the next calls
+
+```php
+//Storing on memcache
+$cacheManager = $container->get("urodoz_cachemanager");
+$cacheManager->implementation("memcache")->set($key1, $value1);
+$cacheManager->set($key2, $value2);
+$cacheManager->set($key3, $value3);
+$cacheManager->set($key4, $value4);
+//Retrieving from memcache
+$data["one"] = $cacheManager->get($key2);
+$data["two"] = $cacheManager->get($key3);
+$data["three"] = $cacheManager->get($key4);
+```
+
 To store and retrieve data from the redis server (as service), you only need to change the implementation requested to cache manager service
 
 ```php
