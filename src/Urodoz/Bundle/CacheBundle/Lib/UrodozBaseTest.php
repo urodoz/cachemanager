@@ -35,8 +35,8 @@ class UrodozBaseTest extends WebTestCase
 
         //Needs at least one configuration be a workable service
         if(empty($memcacheKeys) && empty($redisKeys)) $this->markTestSkipped("The array of cache connections is empty, no memcache or redis servers connections defined");
-        if($forceConfMemcache && empty($memcacheKeys)) $this->markTestSkipped("The array of memcache connections is empty, the test required memcache configuration to continue");
-        if($forceConfMemcache && empty($redisKeys)) $this->markTestSkipped("The array of redis connections is empty, the test required memcache configuration to continue");
+        if($forceConfMemcache && empty($memcacheKeys)) $this->markTestSkipped("The array of memcache connections is empty, the test requires a memcache configuration to continue");
+        if($forceConfMemcache && empty($redisKeys)) $this->markTestSkipped("The array of redis connections is empty, the test requires a redis configuration to continue");
 
         return $container;
     }

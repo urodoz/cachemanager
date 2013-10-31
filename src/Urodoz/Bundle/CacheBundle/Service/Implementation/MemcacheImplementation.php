@@ -16,6 +16,7 @@ use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterfac
 class MemcacheImplementation implements CacheImplementationInterface
 {
 
+    //TODO : Expose the default timeout as config parameter (optional)
     const DEFAULT_TIMEOUT = 36000; //10 Hours by default
 
     /**

@@ -63,7 +63,7 @@ class UrodozCacheExtension extends Extension
          * Load Implementations
          */
         foreach (static::$availableImplementations as $implementation) {
-            if (isset($config["memcache"]["servers"])) {
+            if (isset($config[$implementation]["servers"])) {
                 $this->configurationFactory->factoryImplementationConfiguration(
                         $implementation,
                         $config,
