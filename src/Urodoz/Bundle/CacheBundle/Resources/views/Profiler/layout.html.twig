@@ -1,0 +1,43 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+{% set icon %}
+<img height="28" alt="Urodoz Cache Manager" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWVJREFUeNrUmNsNgjAUhsEwABvYDewIjuAIdRJxkuoEOIIbgBvgBLgBniZgGuydUlqS/4XU40fbc82HYchifnIPNkoQFrxvQZ8lhl03jwERUA3qmR2F+nEdGX+3KiACUQMoFSwd7XgHrByhZKp8AbKvbTzDTWp0u6kDxAuO0+bYsQtgCDgtpAwQBYTjIZEpYBMYjr+Tf4CFwFuxReh5gF6C9wfQyTLs4fH/K5XH+rzk1HEnkeyI6Qqe6GKTigDLhY7hE7Kf0iIPSFaOabaQZA5YBwi8NpD1HLAPlB2ohY0fYBk4hZlCllMcVMW9G+juWG/KitUzd+91cfFZaBa92aIVKnlTyGy3YbvBILuYAY2qa90R70HHBXewVcARU0NRe3EScTCJTBJ9Lo6+mom+Hoy2os4FPcllo56EPVe+J0miq0uyL45+spDEbCaJ6VYS88FkJqybzah9TPmRZFc6k5JeB/gVYABfRYFIPJgm1QAAAABJRU5ErkJggg==">
+<span class="sf-toolbar-info-piece-additional-detail">Cache</span>
+{% endset %}
+{% set text %}
+<div class="sf-toolbar-info-piece">
+    <b>Urodoz Cache</b>
+</div>
+<div class="sf-toolbar-info-piece">
+    <b>Hits</b>
+    <span class="sf-toolbar-status sf-toolbar-status-yellow">{{ collector.hits|length }}</span>
+</div>
+<div class="sf-toolbar-info-piece">
+    <b>Miised hits</b>
+    <span class="sf-toolbar-status sf-toolbar-status-red">{{ collector.missedHits|length }}</span>
+</div>
+{% endset %}
+{% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
+
+{% endblock %}
+
+{% block head %}
+    {# if the web profiler panel needs some specific JS or CSS files #}
+{% endblock %}
+
+{% block menu %}
+<span class="label">
+    <span class="icon">
+        <img width=30 src="{{ asset('bundles/urodozcache/images/cache.png') }}" />
+    </span>
+    <strong>Cache manager</strong>
+    <span class="count">
+        <span>{{ collector.hits|length }}</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+<h2>Urodoz Cache Manager</h2>
+{% endblock %}

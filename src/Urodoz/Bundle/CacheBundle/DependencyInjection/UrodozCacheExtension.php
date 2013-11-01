@@ -55,6 +55,7 @@ class UrodozCacheExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+        $environment = $container->getParameter("kernel.environment");
         //Load needed helpers
         $this->loadSymfonyValidator();
         $this->loadConfigurationFactory();
@@ -85,6 +86,10 @@ class UrodozCacheExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+        //Loading dev services if dev or test
+        if ($environment=="dev" || $environment=="test") {
+            $loader->load('services_dev.yml');
+        }
     }
 
     /**

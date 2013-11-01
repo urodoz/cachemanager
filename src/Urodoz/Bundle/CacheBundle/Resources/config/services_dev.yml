@@ -1,0 +1,11 @@
+parameters:
+    urodoz_cache.manager.collector.class: Urodoz\Bundle\CacheBundle\Service\Collector\UsageCollector
+
+services:
+
+    data_collector.urodoz_cacheusage:
+        class: %urodoz_cache.manager.collector.class%
+        tags:
+            - { name: data_collector, template: "UrodozCacheBundle:Profiler:layout.html.twig", id: "urodozMemcache" }
+            - { name: kernel.event_listener, event: urodoz.events.cachehit, method: onSuccessfullHit }
+            - { name: kernel.event_listener, event: urodoz.events.missed_cachehit, method: onMissedHit }
