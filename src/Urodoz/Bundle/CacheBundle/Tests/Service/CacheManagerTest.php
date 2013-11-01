@@ -67,7 +67,7 @@ class CacheManagerTest extends UrodozBaseTest
 
     /**
      * @code
-     * R
+     * phpunit -v --filter testBasicSetAndRetrieveForRedis -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
      * @endcode
      */
     public function testBasicSetAndRetrieveForRedis()

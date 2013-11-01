@@ -16,6 +16,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
 use Urodoz\Bundle\CacheBundle\Exception\CacheException;
 use Urodoz\Bundle\CacheBundle\Service\ConfigurationFactory;
+use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Urodoz\Bundle\CacheBundle\Event\CacheHitEvent;
+use Urodoz\Bundle\CacheBundle\Event\MissedCacheHitEvent;
 
 class CacheManager implements CacheImplementationInterface
 {
@@ -43,6 +46,13 @@ class CacheManager implements CacheImplementationInterface
     private $activeImplementation=null;
 
     /**
+     * Event dispatcher
+     *
+     * @var ContainerAwareEventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
      * Prefix generator service
      *
      * @var PrefixGeneratorInterface
@@ -55,6 +65,24 @@ class CacheManager implements CacheImplementationInterface
         foreach ($connections as $configConnection) {
             $this->connections[$key][] = $configConnection;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+        return "CacheManager";
+    }
+
+    /**
+     * Sets the event dispatcher on the cache manager
+     *
+     * @param ContainerAwareEventDispatcher $eventDispatcher
+     */
+    public function setEventDispatcher(ContainerAwareEventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     private function raiseExceptionIfNoImplementationSetted()
@@ -183,8 +211,9 @@ class CacheManager implements CacheImplementationInterface
     public function set($key, $value, $timeout=null)
     {
         $key = $this->updateCacheKey($key);
+        $result = $this->getActiveImplementation()->set($key, $value, $timeout);
 
-        return $this->getActiveImplementation()->set($key, $value, $timeout);
+        return $result;
     }
 
     /**
@@ -193,8 +222,18 @@ class CacheManager implements CacheImplementationInterface
     public function get($key)
     {
         $key = $this->updateCacheKey($key);
+        $result = $this->getActiveImplementation()->get($key);
+        if ($result) {
+            //Dispatch memcache hit event
+            $event = new CacheHitEvent($this->getActiveImplementation()->getName(), $key, $result);
+            $this->eventDispatcher->dispatch("urodoz.events.cachehit", $event);
+        } else {
+            //Dispatch memcache missed hit event
+            $event = new MissedCacheHitEvent($this->getActiveImplementation()->getName(), $key);
+            $this->eventDispatcher->dispatch("urodoz.events.missed_cachehit", $event);
+        }
 
-        return $this->getActiveImplementation()->get($key);
+        return $result;
     }
 
     /**

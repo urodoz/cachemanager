@@ -41,4 +41,12 @@ class UrodozBaseTest extends WebTestCase
         return $container;
     }
 
+    public function getImplementationProvider()
+    {
+        return array(
+            array("memcache"),
+            array("redis"),
+        );
+    }
+
 }

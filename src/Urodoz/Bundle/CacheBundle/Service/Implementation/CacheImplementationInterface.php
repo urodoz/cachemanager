@@ -22,6 +22,14 @@ interface CacheImplementationInterface
     public function init(array $connections);
 
     /**
+     * Returns a human-readable name of the
+     * implementation
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
      * Sets a value on the cache implementation (non-indexed)
      *
      * @param string  $key

@@ -43,6 +43,14 @@ class RedisImplementation implements CacheImplementationInterface
     /**
      * {@inheritDoc}
      */
+    public function getName()
+    {
+        return "Redis";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function set($key, $value, $timeout=null)
     {
         return $this->client->set($key, $value);

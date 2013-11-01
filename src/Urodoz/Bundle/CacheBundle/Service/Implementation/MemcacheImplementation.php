@@ -40,6 +40,14 @@ class MemcacheImplementation implements CacheImplementationInterface
     /**
      * {@inheritDoc}
      */
+    public function getName()
+    {
+        return "Memcache";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function set($key, $value, $timeout=null)
     {
         if(is_null($timeout)) $timeout = static::DEFAULT_TIMEOUT;
