@@ -40,6 +40,19 @@ urodoz_cache:
         servers: ["192.168.1.120:6379"]
 ```
 
+Events
+------
+
+**Cache hit**
+
+On cache hit the event *urodoz.events.cachehit* is dispatched on the Symfony 2 EventDispatcher. The event is from class : *Urodoz\Bundle\CacheBundle\Event\CacheHitEvent*.
+Contains information about the key used, the content stored on the cache implementation and implementation used.
+
+**Missed cache hit**
+
+On cache hit the event *urodoz.events.missed_cachehit* is dispatched on the Symfony 2 EventDispatcher. The event is from class : *Urodoz\Bundle\CacheBundle\Event\MissedCacheHitEvent*.
+Contains information about the key used and the implementation.
+
 Usage
 -----
 
