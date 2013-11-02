@@ -13,4 +13,3 @@ services:
             - ["setGenericConnections", ["memcache", %urodoz_cachemanager.memcacheconnections%]]
             - ["setGenericConnections", ["redis", %urodoz_cachemanager.redisconnections%]]
             - ["setEventDispatcher", [@event_dispatcher]]
-            - ["setPrefixGenerator", [@service_container, %urodoz_cachemanager.prefixgenerator%]]

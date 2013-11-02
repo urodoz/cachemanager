@@ -49,13 +49,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
 
-                    ->arrayNode("key_generation")
-                        ->children()
-                            ->scalarNode("prefix")
-                            ->end()
-                        ->end()
-                    ->end()
-
                     /*
                      * Behaviours
                      */

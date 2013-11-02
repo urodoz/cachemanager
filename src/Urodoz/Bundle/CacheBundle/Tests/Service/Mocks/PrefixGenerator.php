@@ -11,7 +11,7 @@
 
 namespace Urodoz\Bundle\CacheBundle\Tests\Service\Mocks;
 
-use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
+use Urodoz\Bundle\CacheBundle\Event\UpdateCacheKeyEvent;
 
 /**
  * Class used with test purposes by CacheManagerTest
@@ -23,7 +23,7 @@ use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
  *
  * @author Albert Lacarta <urodoz@gmail.com>
  */
-class PrefixGenerator implements PrefixGeneratorInterface
+class PrefixGenerator
 {
 
     /**
@@ -31,14 +31,14 @@ class PrefixGenerator implements PrefixGeneratorInterface
      */
     private $prefix="foo";
 
+    public function onCacheKeyUpdate(UpdateCacheKeyEvent $event)
+    {
+        $event->addPrefix($this->prefix);
+    }
+
     public function setPrefixUsed($newPrefix)
     {
         $this->prefix = $newPrefix;
-    }
-
-    public function getPrefix($nonPrefixedKey)
-    {
-        return $this->prefix;
     }
 
 }

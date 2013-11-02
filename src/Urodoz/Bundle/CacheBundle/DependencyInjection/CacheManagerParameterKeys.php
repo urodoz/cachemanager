@@ -43,21 +43,4 @@ final class CacheManagerParameterKeys
      */
     const PARAM_KEY_REDIS_CONNECTIONS = "urodoz_cachemanager.redisconnections";
 
-    /**
-     * Boolean flag parameter key to indicate if the cache
-     * keys should be prefixed using a service
-     *
-     * @var string
-     */
-    const PARAM_KEY_HAS_PREFIX_GENERATOR = "urodoz_cachemanager.haskeyprefixgenerator";
-
-    /**
-     * Parameter key on container to identify the
-     * service id of the prefix generator service from
-     * container
-     *
-     * @var string
-     */
-    const PARAM_KEY_PREFIX_GENERATOR_SERVICE_ID = "urodoz_cachemanager.prefixgenerator";
-
 }

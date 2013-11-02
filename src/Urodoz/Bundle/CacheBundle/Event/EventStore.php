@@ -35,4 +35,12 @@ final class EventStore
      */
     const EVENT_MISSED_CACHE_HIT = "urodoz.events.missed_cachehit";
 
+    /**
+     * Identifier of the event dispatched when the cache
+     * key can be updated with any listener
+     *
+     * @var string
+     */
+    const UPDATE_CACHE_KEY = "urodoz.events.update_cachekey";
+
 }

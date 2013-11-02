@@ -18,7 +18,6 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator;
 use Urodoz\Bundle\CacheBundle\Service\ConfigurationFactory;
-use Urodoz\Bundle\CacheBundle\DependencyInjection\CacheManagerParameterKeys;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -72,16 +71,6 @@ class UrodozCacheExtension extends Extension
                         );
             }
 
-        }
-
-        /*
-         * Load prefix generator implementation
-         */
-        $container->setParameter(CacheManagerParameterKeys::PARAM_KEY_HAS_PREFIX_GENERATOR, false); //Default value
-        $container->setParameter(CacheManagerParameterKeys::PARAM_KEY_PREFIX_GENERATOR_SERVICE_ID, null); //Default value
-        if (isset($config["key_generation"]) && isset($config["key_generation"]["prefix"])) {
-            $container->setParameter(CacheManagerParameterKeys::PARAM_KEY_HAS_PREFIX_GENERATOR, true);
-            $container->setParameter(CacheManagerParameterKeys::PARAM_KEY_PREFIX_GENERATOR_SERVICE_ID, $config["key_generation"]["prefix"]);
         }
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

@@ -12,13 +12,13 @@
 namespace Urodoz\Bundle\CacheBundle\Service;
 
 use Urodoz\Bundle\CacheBundle\Service\Implementation\CacheImplementationInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
 use Urodoz\Bundle\CacheBundle\Exception\CacheException;
 use Urodoz\Bundle\CacheBundle\Service\ConfigurationFactory;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Urodoz\Bundle\CacheBundle\Event\CacheHitEvent;
 use Urodoz\Bundle\CacheBundle\Event\MissedCacheHitEvent;
+use Urodoz\Bundle\CacheBundle\Event\UpdateCacheKeyEvent;
+use Urodoz\Bundle\CacheBundle\Event\EventStore;
 
 class CacheManager implements CacheImplementationInterface
 {
@@ -51,13 +51,6 @@ class CacheManager implements CacheImplementationInterface
      * @var ContainerAwareEventDispatcher
      */
     private $eventDispatcher;
-
-    /**
-     * Prefix generator service
-     *
-     * @var PrefixGeneratorInterface
-     */
-    private $prefixGenerator;
 
     public function setGenericConnections($key, array $connections)
     {
@@ -93,30 +86,6 @@ class CacheManager implements CacheImplementationInterface
                     . "Maybe you forgot to call the implementation method "
                     . "first : \$cacheManager->implementation()->set(..."
                     );
-        }
-    }
-
-    /**
-     * Sets the prefix generator service if this service is defined
-     * and exists on the container
-     *
-     * @param  ContainerInterface $container
-     * @param  string             $service
-     * @throws CacheException
-     */
-    public function setPrefixGenerator(ContainerInterface $container, $service = null)
-    {
-        if (!is_null($service) && $container->has($service)) {
-            $serviceFromContainer = $container->get($service);
-            if (!$serviceFromContainer instanceof PrefixGeneratorInterface) {
-                throw new CacheException(
-                        "A PrefixGenerator service (id:".$service.")"
-                        ." has been registered on CacheManager, but does not"
-                        ." implement the PrefixGeneratorInterface as expected"
-                        );
-            }
-            //Adding service to instance
-            $this->prefixGenerator = $serviceFromContainer;
         }
     }
 
@@ -165,9 +134,11 @@ class CacheManager implements CacheImplementationInterface
      */
     protected function updateCacheKey($cacheKey)
     {
-        if($this->hasPrefixGenerator()) $cacheKey = $this->prefixGenerator->getPrefix ($cacheKey) . $cacheKey;
-
-        return $cacheKey;
+        //Creating and dispatching the event
+        $event = new UpdateCacheKeyEvent($cacheKey);
+        $this->eventDispatcher->dispatch(EventStore::UPDATE_CACHE_KEY, $event);
+        //Returning updated key
+        return $event->getKey();
     }
 
     /**
