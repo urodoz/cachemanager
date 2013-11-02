@@ -96,7 +96,7 @@ $cacheManager->implementation("redis")->get($key);
 Prefix generation
 -----------------
 
-You can attach a service from Symfony2 container to generate a prefix for all the cache keys. The next configuration is a sample :
+The event throwed to update the cache key is *urodoz.events.update_cachekey* , this is a sample configuration
 
 ```yml
 urodoz_cache:
@@ -104,28 +104,38 @@ urodoz_cache:
         servers: ["127.0.0.1:11211"]
     redis:
         servers: ["192.168.1.120:6379"]
-    key_generation:
-        prefix: someServiceIdFromContainer
 ```
 
-The service should implement the PrefixGeneratorInterface. The next class is a sample of cache prefix key generator :
+Service configuration attached as listener:
+
+```yml
+    sample.cachePrefixGenerator:
+        class: Sample\Bundle\CoreBundle\Service\CachePrefixGenerator
+        calls:
+            - ["setContainer", [@service_container]]
+        tags:
+            - { name: kernel.event_listener, event: urodoz.events.update_cachekey, method: onCacheKeyUpdate }
+```
+
+Service class:
 
 ```php
 <?php
 
 namespace Urodoz\Bundle\CacheBundle\Tests\Service\Mocks;
 
-use Urodoz\Bundle\CacheBundle\Service\PrefixGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Urodoz\Bundle\CacheBundle\Event\UpdateCacheKeyEvent;
 
-class PrefixGenerator implements PrefixGeneratorInterface, ContainerAwareInterface
+class PrefixGenerator implements ContainerAwareInterface
 {
 
     //....
 
-    public function getPrefix($nonPrefixedKey)
+    public function onCacheKeyUpdate(UpdateCacheKeyEvent $event)
     {
-        return $this->container->getParameter("application_version"); 
+        $event->addPrefix($this->container->getParameter("applicationName")."_");
+        return $event;
     }
 
 }
