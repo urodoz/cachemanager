@@ -1,6 +1,6 @@
 {
     "name": "urodoz/cachemanager",
-    "type": "library",
+    "type": "symfony-bundle",
     "description": "Bundle for Symfony 2 to handle cache management",
     "license": "MIT",
     "keywords": ["cache","memcache","redis"],
@@ -8,10 +8,12 @@
         {"name":"Albert Lacarta", "email":"urodoz@gmail.com"}
     ],
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { "Urodoz\\Bundle\\CacheBundle": "" }
     },
     "require": {
         "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.*",
         "predis/predis": "0.8.*@dev"
-    }
+    },
+    "target-dir": "Urodoz/Bundle/CacheBundle"
 }
