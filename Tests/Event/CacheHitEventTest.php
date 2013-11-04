@@ -20,7 +20,7 @@ use Urodoz\Bundle\CacheBundle\Event\MissedCacheHitEvent;
 
 /**
  * @code
- * phpunit -v -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Event/CacheHitEventTest.php
+ * phpunit -v -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Event/CacheHitEventTest.php
  * @endcode
  */
 class CacheHitEventTest extends UrodozBaseTest
@@ -28,7 +28,7 @@ class CacheHitEventTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testEventDispatched -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Event/CacheHitEventTest.php
+     * phpunit -v --filter testEventDispatched -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Event/CacheHitEventTest.php
      * @endcode
      * @dataProvider getImplementationProvider
      */

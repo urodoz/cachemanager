@@ -18,7 +18,7 @@ use Urodoz\Bundle\CacheBundle\Lib\UrodozBaseTest;
 
 /**
  * @code
- * phpunit -v -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
+ * phpunit -v -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
  * @endcode
  */
 class ConfigurationFactoryTest extends UrodozBaseTest
@@ -26,7 +26,7 @@ class ConfigurationFactoryTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testExceptionOnNonExistantImplementation -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
+     * phpunit -v --filter testExceptionOnNonExistantImplementation -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
      * @endcode
      * @expectedException Urodoz\Bundle\CacheBundle\Exception\BadConfigurationException
      */
@@ -47,7 +47,7 @@ class ConfigurationFactoryTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testBadServerDefinitionException -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
+     * phpunit -v --filter testBadServerDefinitionException -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
      * @endcode
      * @expectedException Urodoz\Bundle\CacheBundle\Exception\BadConfigurationException
      */
@@ -86,7 +86,7 @@ class ConfigurationFactoryTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testBadValidationOfServerDefinitionValues -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
+     * phpunit -v --filter testBadValidationOfServerDefinitionValues -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/ConfigurationFactoryTest.php
      * @endcode
      * @dataProvider providerBadServerDefinitions
      * @expectedException Urodoz\Bundle\CacheBundle\Exception\BadConfigurationException

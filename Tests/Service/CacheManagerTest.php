@@ -18,7 +18,7 @@ use Urodoz\Bundle\CacheBundle\Event\EventStore;
 
 /**
  * @code
- * phpunit -v -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
+ * phpunit -v -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
  * @endcode
  */
 class CacheManagerTest extends UrodozBaseTest
@@ -26,7 +26,7 @@ class CacheManagerTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --group UrodozCacheManager_basicRetrieveAndDelete -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
+     * phpunit -v --group UrodozCacheManager_basicRetrieveAndDelete -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
      * @endcode
      * @group UrodozCacheManager_basicRetrieveAndDelete
      */
@@ -49,7 +49,7 @@ class CacheManagerTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --group UrodozCacheManager_basicRetrieveAndDelete -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
+     * phpunit -v --group UrodozCacheManager_basicRetrieveAndDelete -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
      * @endcode
      * @depends testBasicSetAndRetrieveForMemcache
      * @group UrodozCacheManager_basicRetrieveAndDelete
@@ -66,7 +66,7 @@ class CacheManagerTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testBasicSetAndRetrieveForRedis -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
+     * phpunit -v --filter testBasicSetAndRetrieveForRedis -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
      * @endcode
      */
     public function testBasicSetAndRetrieveForRedis()
@@ -96,7 +96,7 @@ class CacheManagerTest extends UrodozBaseTest
 
     /**
      * @code
-     * phpunit -v --filter testPrefixGeneratorCustom -c app/ vendor/urodoz/cachemanager/src/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
+     * phpunit -v --filter testPrefixGeneratorCustom -c app/ vendor/urodoz/cachemanager/Urodoz/Bundle/CacheBundle/Tests/Service/CacheManagerTest.php
      * @endcode
      * @dataProvider getImplementationProvider
      */
