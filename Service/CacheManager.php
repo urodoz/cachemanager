@@ -19,6 +19,8 @@ use Urodoz\Bundle\CacheBundle\Event\CacheHitEvent;
 use Urodoz\Bundle\CacheBundle\Event\MissedCacheHitEvent;
 use Urodoz\Bundle\CacheBundle\Event\UpdateCacheKeyEvent;
 use Urodoz\Bundle\CacheBundle\Event\EventStore;
+use Urodoz\Bundle\CacheBundle\Exception\CorruptedDataException;
+use Urodoz\Bundle\CacheBundle\Service\CacheItem\CacheItemStore;
 
 class CacheManager implements CacheImplementationInterface
 {
@@ -179,10 +181,16 @@ class CacheManager implements CacheImplementationInterface
     /**
      * {@inheritDoc}
      */
-    public function set($key, $value, $timeout=null)
+    public function set($key, $value, $timeout=3600)
     {
         $key = $this->updateCacheKey($key);
-        $result = $this->getActiveImplementation()->set($key, $value, $timeout);
+
+        //Create the unit to be stored
+        $cacheItemStore = new CacheItemStore();
+        $cacheItemStore->createFromData($value, $timeout);
+        $valueToBeCached = $cacheItemStore->getCacheData();
+
+        $result = $this->getActiveImplementation()->set($key, $valueToBeCached, $timeout);
 
         return $result;
     }
@@ -194,6 +202,20 @@ class CacheManager implements CacheImplementationInterface
     {
         $key = $this->updateCacheKey($key);
         $result = $this->getActiveImplementation()->get($key);
+
+        //Parse result to retrieve it raw
+        if ($result) {
+            try {
+                $cacheItemStore = new CacheItemStore();
+                $cacheItemStore->hydrateFromCacheData($result);
+                $cacheItemStore->getData();
+                $result = $cacheItemStore->getData();
+            } catch (CorruptedDataException $e) {
+                $result = null;
+            }
+        }
+
+        //Throwing event
         if ($result) {
             //Dispatch memcache hit event
             $event = new CacheHitEvent($this->getActiveImplementation()->getName(), $key, $result);
