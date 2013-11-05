@@ -121,7 +121,3 @@ class PrefixGenerator implements ContainerAwareInterface
 }
 ```
 
-Indexes Keys
-------------
-
-Currently on development
