@@ -4,7 +4,7 @@ Urodoz CacheManager
 Bundle to handle cache management for Symfony 2
 
 
-* [Installation](Installation)
+* [Installation](../../wiki/Installation)
 
 
 Configuration
