@@ -18,7 +18,6 @@ abstract class AbstractConfigurationStore
 
     /**
      * @Assert\Type("string")
-     * @Assert\Ip()
      * @Assert\NotBlank()
      */
     protected $host;
